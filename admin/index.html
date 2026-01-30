@@ -162,6 +162,10 @@
                     const isAdmin = await FirebaseAuth.isUserAdmin(result.user.uid);
 
                     if (isAdmin) {
+                        // SET LOCAL STORAGE (Critical for Dashboard Access)
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        localStorage.setItem('adminEmail', email);
+
                         showToast('Login successful! Redirecting...', 'success');
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';

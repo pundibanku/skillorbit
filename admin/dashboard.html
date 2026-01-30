@@ -10,6 +10,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- INLINE FIREBASE CONFIG -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFAuo5deSArYV6I8GqUmHGlVjDx27x0QM",
+            authDomain: "test-projects-34f9b.firebaseapp.com",
+            projectId: "test-projects-34f9b",
+            storageBucket: "test-projects-34f9b.firebasestorage.app",
+            messagingSenderId: "707160789934",
+            appId: "1:707160789934:web:429b47ab1088dc0f95ae3f"
+        };
+
+        // Initialize Firebase
+        if (typeof firebase !== 'undefined') {
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            else firebase.app();
+        }
+    </script>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/pages.css">
     <link rel="stylesheet" href="../css/admin.css">
