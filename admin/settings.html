@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Admin - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <span>SkillOrbit</span>
+                </a>
+            </div>
+            <ul class="admin-sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <a href="#" id="logoutBtn" style="color: var(--error);"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button class="mobile-menu-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h1>Settings</h1>
+                </div>
+            </div>
+
+            <!-- Settings Tabs -->
+            <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="tabGeneral">General</button>
+                <button class="btn btn-secondary" id="tabPayment">Payment</button>
+                <button class="btn btn-secondary" id="tabSecurity">Security</button>
+                <button class="btn btn-secondary" id="tabEmail">Email</button>
+            </div>
+
+            <!-- General Settings -->
+            <div class="admin-card" id="generalSettings">
+                <div class="admin-card-header">
+                    <h2>General Settings</h2>
+                </div>
+                <div class="admin-card-body">
+                    <form class="admin-form">
+                        <div class="form-group">
+                            <label class="form-label">Site Name</label>
+                            <input type="text" class="form-input" value="SkillOrbit">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Site Tagline</label>
+                            <input type="text" class="form-input" value="Learn. Grow. Succeed.">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contact Email</label>
+                            <input type="email" class="form-input" value="support@skillorbit.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contact Phone</label>
+                            <input type="tel" class="form-input" value="+91 98765 43210">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Site Description</label>
+                            <textarea class="form-input"
+                                rows="3">SkillOrbit is a premium online learning platform offering high-quality courses in web development, programming, marketing, and more.</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Enable maintenance mode</span>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveSettings('General')">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Payment Settings -->
+            <div class="admin-card" id="paymentSettings" style="display: none;">
+                <div class="admin-card-header">
+                    <h2>Payment Settings</h2>
+                </div>
+                <div class="admin-card-body">
+                    <form class="admin-form">
+                        <div class="form-group">
+                            <label class="form-label">Currency</label>
+                            <select class="form-input">
+                                <option value="INR" selected>INR - Indian Rupee (₹)</option>
+                                <option value="USD">USD - US Dollar ($)</option>
+                                <option value="EUR">EUR - Euro (€)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Razorpay Key ID</label>
+                            <input type="text" class="form-input" placeholder="rzp_live_xxxxxxxxxx">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Razorpay Secret Key</label>
+                            <input type="password" class="form-input" placeholder="••••••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Enable UPI Payments</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Enable Card Payments</span>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveSettings('Payment')">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Settings -->
+            <div class="admin-card" id="securitySettings" style="display: none;">
+                <div class="admin-card-header">
+                    <h2>Security Settings</h2>
+                </div>
+                <div class="admin-card-body">
+                    <form class="admin-form">
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Enable DevTools Detection</span>
+                            </label>
+                            <p style="color: var(--text-muted); font-size: 0.875rem; margin: 8px 0 0;">Detect and warn
+                                users when DevTools is opened</p>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Disable Right-Click Menu</span>
+                            </label>
+                            <p style="color: var(--text-muted); font-size: 0.875rem; margin: 8px 0 0;">Prevent
+                                right-click context menu on protected pages</p>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Enable Video Watermark</span>
+                            </label>
+                            <p style="color: var(--text-muted); font-size: 0.875rem; margin: 8px 0 0;">Show user email
+                                as watermark on video content</p>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Block Keyboard Shortcuts</span>
+                            </label>
+                            <p style="color: var(--text-muted); font-size: 0.875rem; margin: 8px 0 0;">Block F12,
+                                Ctrl+Shift+I, and similar shortcuts</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Session Timeout (minutes)</label>
+                            <input type="number" class="form-input" value="60" style="width: 150px;">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveSettings('Security')">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Email Settings -->
+            <div class="admin-card" id="emailSettings" style="display: none;">
+                <div class="admin-card-header">
+                    <h2>Email Settings</h2>
+                </div>
+                <div class="admin-card-body">
+                    <form class="admin-form">
+                        <div class="form-group">
+                            <label class="form-label">SMTP Host</label>
+                            <input type="text" class="form-input" placeholder="smtp.gmail.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">SMTP Port</label>
+                            <input type="number" class="form-input" value="587" style="width: 150px;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">SMTP Username</label>
+                            <input type="email" class="form-input" placeholder="noreply@skillorbit.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">SMTP Password</label>
+                            <input type="password" class="form-input" placeholder="••••••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Send welcome email to new users</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" checked style="width: 18px; height: 18px;">
+                                <span>Send order confirmation emails</span>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveSettings('Email')">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Check admin login
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        // Tab handling
+        const tabs = {
+            tabGeneral: 'generalSettings',
+            tabPayment: 'paymentSettings',
+            tabSecurity: 'securitySettings',
+            tabEmail: 'emailSettings'
+        };
+
+        Object.keys(tabs).forEach(tabId => {
+            document.getElementById(tabId).addEventListener('click', () => {
+                // Update button states
+                Object.keys(tabs).forEach(t => {
+                    document.getElementById(t).className = 'btn btn-secondary';
+                    document.getElementById(tabs[t]).style.display = 'none';
+                });
+
+                document.getElementById(tabId).className = 'btn btn-primary';
+                document.getElementById(tabs[tabId]).style.display = 'block';
+            });
+        });
+
+        // Save settings
+        function saveSettings(section) {
+            showToast(`${section} settings saved successfully!`);
+        }
+
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas fa-check-circle"></i><span>${message}</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Sidebar toggle
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('adminSidebar').classList.toggle('active');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+
+</html>

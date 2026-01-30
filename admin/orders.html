@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders - Admin - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <span>SkillOrbit</span>
+                </a>
+            </div>
+            <ul class="admin-sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="orders.html" class="active"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <a href="#" id="logoutBtn" style="color: var(--error);"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button class="mobile-menu-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h1>Manage Orders</h1>
+                </div>
+                <div style="display: flex; gap: 16px;">
+                    <div style="text-align: right;">
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Total Revenue</p>
+                        <h3 style="margin: 0; color: var(--success);" id="totalRevenue">₹1,25,000</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="admin-stats" style="margin-bottom: 24px;">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="completedOrders">350</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon orange"><i class="fas fa-clock"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="pendingOrders">25</h3>
+                        <p>Pending</p>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon red"><i class="fas fa-times-circle"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="cancelledOrders">10</h3>
+                        <p>Cancelled</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="admin-filters">
+                <div class="admin-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-input" placeholder="Search by order ID or customer..."
+                        id="searchInput">
+                </div>
+                <select class="form-input" style="width: auto;" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <input type="date" class="form-input" style="width: auto;" id="dateFilter">
+            </div>
+
+            <!-- Orders Table -->
+            <div class="admin-card">
+                <div class="admin-card-body" style="padding: 0;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Course</th>
+                                <th>Amount</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTable">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button><i class="fas fa-chevron-left"></i></button>
+                <button class="active">1</button>
+                <button>2</button>
+                <button>3</button>
+                <button><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Order Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="orderDetails">
+                <!-- Order details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <select class="form-input" style="width: auto;" id="updateStatus">
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button class="btn btn-primary" onclick="updateOrderStatus()">Update Status</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Check admin login
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        // Sample orders data
+        let orders = [
+            { id: "ORD-001", customer: "Rahul Sharma", email: "rahul@gmail.com", course: "Web Development Bootcamp", amount: 2999, payment: "UPI", status: "completed", date: "30 Jan 2026" },
+            { id: "ORD-002", customer: "Priya Patel", email: "priya@gmail.com", course: "Python Programming", amount: 1499, payment: "Card", status: "completed", date: "30 Jan 2026" },
+            { id: "ORD-003", customer: "Amit Kumar", email: "amit@gmail.com", course: "Data Science with Python", amount: 3499, payment: "UPI", status: "pending", date: "29 Jan 2026" },
+            { id: "ORD-004", customer: "Sneha Gupta", email: "sneha@gmail.com", course: "UI/UX Design Fundamentals", amount: 2499, payment: "Card", status: "completed", date: "29 Jan 2026" },
+            { id: "ORD-005", customer: "Vikram Singh", email: "vikram@gmail.com", course: "Digital Marketing Masterclass", amount: 1999, payment: "UPI", status: "completed", date: "28 Jan 2026" },
+            { id: "ORD-006", customer: "Anita Desai", email: "anita@gmail.com", course: "Advanced JavaScript", amount: 1999, payment: "Card", status: "cancelled", date: "28 Jan 2026" },
+            { id: "ORD-007", customer: "Rajesh Kumar", email: "rajesh@gmail.com", course: "Machine Learning A-Z", amount: 3999, payment: "UPI", status: "completed", date: "27 Jan 2026" },
+            { id: "ORD-008", customer: "Meera Nair", email: "meera@gmail.com", course: "React Native Development", amount: 2799, payment: "Card", status: "pending", date: "27 Jan 2026" }
+        ];
+
+        let currentOrderId = null;
+
+        // DOM Elements
+        const ordersTable = document.getElementById('ordersTable');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const dateFilter = document.getElementById('dateFilter');
+        const orderModal = document.getElementById('orderModal');
+
+        // Render orders table
+        function renderOrders() {
+            const search = searchInput.value.toLowerCase();
+            const status = statusFilter.value;
+
+            let filtered = orders.filter(o => {
+                const matchSearch = o.id.toLowerCase().includes(search) || o.customer.toLowerCase().includes(search);
+                const matchStatus = !status || o.status === status;
+                return matchSearch && matchStatus;
+            });
+
+            ordersTable.innerHTML = filtered.map(order => `
+                <tr>
+                    <td><strong>#${order.id}</strong></td>
+                    <td>
+                        <div>
+                            <p style="margin: 0;">${order.customer}</p>
+                            <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">${order.email}</p>
+                        </div>
+                    </td>
+                    <td>${order.course}</td>
+                    <td>₹${order.amount.toLocaleString()}</td>
+                    <td><span style="background: var(--bg-secondary); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">${order.payment}</span></td>
+                    <td><span class="status-badge ${order.status === 'completed' ? 'active' : order.status === 'pending' ? 'pending' : 'inactive'}">${capitalizeFirst(order.status)}</span></td>
+                    <td>${order.date}</td>
+                    <td>
+                        <button class="action-btn view" onclick="viewOrder('${order.id}')" title="View"><i class="fas fa-eye"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Update stats
+            document.getElementById('completedOrders').textContent = orders.filter(o => o.status === 'completed').length;
+            document.getElementById('pendingOrders').textContent = orders.filter(o => o.status === 'pending').length;
+            document.getElementById('cancelledOrders').textContent = orders.filter(o => o.status === 'cancelled').length;
+
+            const totalRevenue = orders.filter(o => o.status === 'completed').reduce((sum, o) => sum + o.amount, 0);
+            document.getElementById('totalRevenue').textContent = '₹' + totalRevenue.toLocaleString();
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // View order details
+        function viewOrder(id) {
+            const order = orders.find(o => o.id === id);
+            if (!order) return;
+
+            currentOrderId = id;
+
+            document.getElementById('orderDetails').innerHTML = `
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin: 0 0 8px;">#${order.id}</h3>
+                    <span class="status-badge ${order.status === 'completed' ? 'active' : order.status === 'pending' ? 'pending' : 'inactive'}">${capitalizeFirst(order.status)}</span>
+                </div>
+                <div style="display: grid; gap: 16px;">
+                    <div style="padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+                        <p style="margin: 0 0 8px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Customer</p>
+                        <p style="margin: 0; font-weight: 500;">${order.customer}</p>
+                        <p style="margin: 4px 0 0; font-size: 0.875rem; color: var(--text-muted);">${order.email}</p>
+                    </div>
+                    <div style="padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+                        <p style="margin: 0 0 8px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Course</p>
+                        <p style="margin: 0; font-weight: 500;">${order.course}</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div style="padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+                            <p style="margin: 0 0 8px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Amount</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1.25rem; color: var(--success);">₹${order.amount.toLocaleString()}</p>
+                        </div>
+                        <div style="padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+                            <p style="margin: 0 0 8px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Payment</p>
+                            <p style="margin: 0; font-weight: 500;">${order.payment}</p>
+                        </div>
+                    </div>
+                    <div style="padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+                        <p style="margin: 0 0 8px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Order Date</p>
+                        <p style="margin: 0;">${order.date}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('updateStatus').value = order.status;
+            orderModal.classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            orderModal.classList.remove('active');
+            currentOrderId = null;
+        }
+
+        // Update order status
+        function updateOrderStatus() {
+            if (!currentOrderId) return;
+
+            const newStatus = document.getElementById('updateStatus').value;
+            const order = orders.find(o => o.id === currentOrderId);
+            order.status = newStatus;
+
+            closeModal();
+            renderOrders();
+            showToast('Order status updated successfully!');
+        }
+
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas fa-check-circle"></i><span>${message}</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', renderOrders);
+        statusFilter.addEventListener('change', renderOrders);
+
+        // Sidebar toggle
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('adminSidebar').classList.toggle('active');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'index.html';
+        });
+
+        // Initialize
+        renderOrders();
+    </script>
+</body>
+
+</html>

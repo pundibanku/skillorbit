@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <span>SkillOrbit</span>
+                </a>
+            </div>
+
+            <ul class="admin-sidebar-menu">
+                <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <a href="#" id="logoutBtn" style="color: var(--error);"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Header -->
+            <div class="admin-header">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button class="mobile-menu-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="admin-user">
+                    <span style="color: var(--text-secondary);" id="adminEmail">admin@skillorbit.com</span>
+                    <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Admin" class="admin-avatar">
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="admin-stats">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon purple"><i class="fas fa-rupee-sign"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalRevenue">₹1,25,000</h3>
+                        <p>Total Revenue</p>
+                        <div class="quick-stat"><span class="trend up">+12%</span> vs last month</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon green"><i class="fas fa-users"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalUsers">1,250</h3>
+                        <p>Total Users</p>
+                        <div class="quick-stat"><span class="trend up">+8%</span> vs last month</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon orange"><i class="fas fa-book"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalCourses">12</h3>
+                        <p>Total Courses</p>
+                        <div class="quick-stat"><span class="trend up">+2</span> this month</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon red"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalOrders">385</h3>
+                        <p>Total Orders</p>
+                        <div class="quick-stat"><span class="trend up">+15%</span> vs last month</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px;">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h2>Revenue Overview</h2>
+                        <select class="form-input" style="width: auto; padding: 8px 16px;">
+                            <option>Last 7 days</option>
+                            <option>Last 30 days</option>
+                            <option>Last 3 months</option>
+                        </select>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="chart-container">
+                            <div style="text-align: center;">
+                                <i class="fas fa-chart-line"
+                                    style="font-size: 3rem; margin-bottom: 16px; color: var(--primary);"></i>
+                                <p>Revenue Chart</p>
+                                <p style="font-size: 0.875rem;">Integrate Chart.js for visual representation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h2>Top Courses</h2>
+                    </div>
+                    <div class="admin-card-body">
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=60&h=40&fit=crop"
+                                    class="image-preview">
+                                <div style="flex: 1;">
+                                    <p style="margin: 0; font-size: 0.875rem;">Web Development</p>
+                                    <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">145 sales</p>
+                                </div>
+                                <span style="color: var(--success); font-weight: 600;">₹43,500</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=60&h=40&fit=crop"
+                                    class="image-preview">
+                                <div style="flex: 1;">
+                                    <p style="margin: 0; font-size: 0.875rem;">Python Programming</p>
+                                    <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">120 sales</p>
+                                </div>
+                                <span style="color: var(--success); font-weight: 600;">₹35,800</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=60&h=40&fit=crop"
+                                    class="image-preview">
+                                <div style="flex: 1;">
+                                    <p style="margin: 0; font-size: 0.875rem;">Data Science</p>
+                                    <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">98 sales</p>
+                                </div>
+                                <span style="color: var(--success); font-weight: 600;">₹28,400</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h2>Recent Orders</h2>
+                    <a href="orders.html" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                <div class="admin-card-body" style="padding: 0;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Course</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrders">
+                            <tr>
+                                <td>#ORD-001</td>
+                                <td>Rahul Sharma</td>
+                                <td>Web Development</td>
+                                <td>₹2,999</td>
+                                <td><span class="status-badge active">Completed</span></td>
+                                <td>30 Jan 2026</td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-002</td>
+                                <td>Priya Patel</td>
+                                <td>Python Programming</td>
+                                <td>₹1,499</td>
+                                <td><span class="status-badge active">Completed</span></td>
+                                <td>30 Jan 2026</td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-003</td>
+                                <td>Amit Kumar</td>
+                                <td>Data Science</td>
+                                <td>₹3,499</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>29 Jan 2026</td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-004</td>
+                                <td>Sneha Gupta</td>
+                                <td>UI/UX Design</td>
+                                <td>₹2,499</td>
+                                <td><span class="status-badge active">Completed</span></td>
+                                <td>29 Jan 2026</td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-005</td>
+                                <td>Vikram Singh</td>
+                                <td>Digital Marketing</td>
+                                <td>₹1,999</td>
+                                <td><span class="status-badge active">Completed</span></td>
+                                <td>28 Jan 2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Check admin login
+        const isAdminLogged = localStorage.getItem('adminLoggedIn');
+        if (isAdminLogged !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        // Display admin email
+        const adminEmail = localStorage.getItem('adminEmail');
+        if (adminEmail) {
+            document.getElementById('adminEmail').textContent = adminEmail;
+        }
+
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const adminSidebar = document.getElementById('adminSidebar');
+
+        sidebarToggle.addEventListener('click', () => {
+            adminSidebar.classList.toggle('active');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminEmail');
+            window.location.href = 'index.html';
+        });
+
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+
+</html>

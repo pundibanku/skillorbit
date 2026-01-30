@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your SkillOrbit account">
+    <title>Register - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">🚀</div>
+                        <span>SkillOrbit</span>
+                    </a>
+                    <h1>Create Account</h1>
+                    <p>Start your learning journey today</p>
+                </div>
+
+                <button class="google-btn" id="googleSignUp">
+                    <svg width="20" height="20" viewBox="0 0 24 24">
+                        <path fill="#4285F4"
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853"
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05"
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                        <path fill="#EA4335"
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <div class="auth-divider">
+                    <span>or register with email</span>
+                </div>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input type="text" id="name" class="form-input" placeholder="Your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <div class="password-toggle">
+                            <input type="password" id="password" class="form-input" placeholder="Min. 8 characters"
+                                required minlength="8">
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm password"
+                            required>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="terms" required
+                                style="width: 18px; height: 18px; margin-top: 2px;">
+                            <span style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5;">
+                                I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </form>
+
+                <p class="auth-footer">
+                    Already have an account? <a href="login.html">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- INLINE FIREBASE CONFIG TO FIX LOADING ISSUES -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFAuo5deSArYV6I8GqUmHGlVjDx27x0QM",
+            authDomain: "test-projects-34f9b.firebaseapp.com",
+            projectId: "test-projects-34f9b",
+            storageBucket: "test-projects-34f9b.firebasestorage.app",
+            messagingSenderId: "707160789934",
+            appId: "1:707160789934:web:429b47ab1088dc0f95ae3f"
+        };
+
+        // Initialize Firebase
+        let app, auth, db, storage;
+        if (typeof firebase !== 'undefined') {
+            if (!firebase.apps.length) app = firebase.initializeApp(firebaseConfig);
+            else app = firebase.app();
+            auth = firebase.auth();
+            db = firebase.firestore();
+        }
+
+        // Auth Helpers
+        window.FirebaseAuth = {
+            initAuthObserver: (cb) => auth && auth.onAuthStateChanged(cb),
+            signUpWithEmail: async (email, password, name) => {
+                try {
+                    const cred = await auth.createUserWithEmailAndPassword(email, password);
+                    await cred.user.updateProfile({ displayName: name });
+                    await db.collection('users').doc(cred.user.uid).set({
+                        email: email, displayName: name, role: 'user',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(), enrolledCourses: []
+                    });
+                    return { success: true, user: cred.user };
+                } catch (e) { return { success: false, error: e.message }; }
+            },
+            signInWithGoogle: async () => {
+                try {
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    const res = await auth.signInWithPopup(provider);
+                    const userDoc = await db.collection('users').doc(res.user.uid).get();
+                    if (!userDoc.exists) {
+                        await db.collection('users').doc(res.user.uid).set({
+                            email: res.user.email, displayName: res.user.displayName, photoURL: res.user.photoURL, role: 'user',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(), enrolledCourses: []
+                        });
+                    }
+                    return { success: true, user: res.user };
+                } catch (e) { return { success: false, error: e.message }; }
+            }
+        };
+    </script>
+    <script>
+        // DOM Elements
+        const registerForm = document.getElementById('registerForm');
+        const googleSignUp = document.getElementById('googleSignUp');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.querySelector('i').classList.toggle('fa-eye');
+            togglePassword.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Show/hide loading
+        function setLoading(show) {
+            loadingOverlay.classList.toggle('hidden', !show);
+        }
+
+        // Validate password
+        function validatePassword(password) {
+            if (password.length < 8) {
+                return 'Password must be at least 8 characters';
+            }
+            return null;
+        }
+
+        // Register form submit
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match!', 'error');
+                return;
+            }
+
+            const passwordError = validatePassword(password);
+            if (passwordError) {
+                showToast(passwordError, 'error');
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                const result = await FirebaseAuth.signUpWithEmail(email, password, name);
+
+                if (result.success) {
+                    showToast('Account created successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard.html';
+                    }, 1500);
+                } else {
+                    // ALERT THE EXACT ERROR FOR DEBUGGING
+                    alert("Registration Error: " + (result.error || "Unknown error"));
+                    showToast(result.error || 'Registration failed.', 'error');
+                }
+            } catch (error) {
+                alert("Critical System Error: " + error.message);
+                showToast('Registration failed: ' + error.message, 'error');
+            }
+
+            setLoading(false);
+        });
+
+        // Google sign up
+        googleSignUp.addEventListener('click', async () => {
+            setLoading(true);
+
+            try {
+                const result = await FirebaseAuth.signInWithGoogle();
+
+                if (result.success) {
+                    showToast('Account created successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard.html';
+                    }, 1500);
+                } else {
+                    alert("Google Sign-In Error: " + (result.error || "Unknown error"));
+                    showToast(result.error || 'Google sign-up failed.', 'error');
+                }
+            } catch (error) {
+                alert("Critical System Error: " + error.message);
+                showToast('Google sign-up failed: ' + error.message, 'error');
+            }
+
+            setLoading(false);
+        });
+
+        // Check if already logged in
+        FirebaseAuth.initAuthObserver((user) => {
+            if (user) {
+                window.location.href = 'user-dashboard.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

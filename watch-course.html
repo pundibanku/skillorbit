@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Course - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body class="protected-content">
+    <div class="watch-page">
+        <!-- Header -->
+        <header class="watch-header">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="user-dashboard.html" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </a>
+                <h3 style="margin: 0; font-size: 1rem;" id="courseTitle">Complete Web Development Bootcamp</h3>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <span id="progressText" style="color: var(--text-muted); font-size: 0.875rem;">45% Complete</span>
+                <button class="btn btn-primary btn-sm" id="toggleSidebar">
+                    <i class="fas fa-list"></i>
+                    <span>Lessons</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="watch-container">
+            <!-- Video Player Section -->
+            <div class="video-player-section">
+                <div class="video-player" id="videoContainer">
+                    <!-- Video with protection -->
+                    <video id="courseVideo" controls controlsList="nodownload" disablePictureInPicture
+                        oncontextmenu="return false;"
+                        poster="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=450&fit=crop">
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                            type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+
+                    <!-- Watermark overlay -->
+                    <div id="videoWatermark"
+                        style="position: absolute; top: 20px; right: 20px; color: rgba(255,255,255,0.3); font-size: 14px; pointer-events: none; z-index: 10;">
+                    </div>
+                </div>
+
+                <div class="video-title">
+                    <h1 id="lessonTitle">Introduction to Web Development</h1>
+                    <p id="lessonDescription" style="color: var(--text-secondary);">
+                        In this lesson, we'll cover the basics of web development and what you'll learn throughout this
+                        course.
+                    </p>
+                </div>
+
+                <!-- Lesson Actions -->
+                <div style="display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" id="markCompleteBtn">
+                        <i class="fas fa-check"></i>
+                        Mark as Complete
+                    </button>
+                    <button class="btn btn-secondary" id="nextLessonBtn">
+                        Next Lesson
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Notes Section -->
+                <div
+                    style="margin-top: 40px; padding: 24px; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                    <h3 style="margin-bottom: 16px;">📝 Your Notes</h3>
+                    <textarea class="form-input" id="lessonNotes" placeholder="Take notes for this lesson..."
+                        style="min-height: 150px;"></textarea>
+                    <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="saveNotes()">
+                        <i class="fas fa-save"></i>
+                        Save Notes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Course Sidebar -->
+            <aside class="course-sidebar" id="courseSidebar">
+                <div class="sidebar-tabs">
+                    <button class="sidebar-tab active" data-tab="lessons">Lessons</button>
+                    <button class="sidebar-tab" data-tab="resources">Resources</button>
+                </div>
+
+                <div class="lessons-list" id="lessonsList">
+                    <!-- Lessons will be loaded here -->
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/security.js"></script>
+    <script>
+        // Sample lessons data
+        const lessons = [
+            { id: 1, title: "Introduction to Web Development", duration: "5:30", completed: true },
+            { id: 2, title: "Setting Up Your Environment", duration: "12:00", completed: true },
+            { id: 3, title: "Understanding HTML Basics", duration: "18:45", completed: true },
+            { id: 4, title: "HTML Elements and Tags", duration: "22:30", completed: false, active: true },
+            { id: 5, title: "Creating Forms", duration: "15:00", completed: false },
+            { id: 6, title: "CSS Fundamentals", duration: "20:00", completed: false },
+            { id: 7, title: "Styling with Flexbox", duration: "25:00", completed: false },
+            { id: 8, title: "CSS Grid Layout", duration: "28:00", completed: false },
+            { id: 9, title: "Responsive Design", duration: "32:00", completed: false },
+            { id: 10, title: "JavaScript Basics", duration: "35:00", completed: false }
+        ];
+
+        let currentLesson = 4;
+
+        // DOM Elements
+        const lessonsList = document.getElementById('lessonsList');
+        const courseVideo = document.getElementById('courseVideo');
+        const lessonTitle = document.getElementById('lessonTitle');
+        const lessonDescription = document.getElementById('lessonDescription');
+        const toastContainer = document.getElementById('toastContainer');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const courseSidebar = document.getElementById('courseSidebar');
+        const videoWatermark = document.getElementById('videoWatermark');
+
+        // Render lessons list
+        function renderLessons() {
+            lessonsList.innerHTML = lessons.map((lesson, index) => `
+                <div class="lesson-item ${lesson.active ? 'active' : ''} ${lesson.completed ? 'completed' : ''}" 
+                     onclick="selectLesson(${index + 1})" data-lesson-id="${lesson.id}">
+                    <div class="lesson-number">${lesson.completed ? '✓' : index + 1}</div>
+                    <div class="lesson-info">
+                        <h4>${lesson.title}</h4>
+                        <p><i class="fas fa-clock"></i> ${lesson.duration}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select lesson
+        function selectLesson(lessonId) {
+            currentLesson = lessonId;
+            const lesson = lessons[lessonId - 1];
+
+            // Update active state
+            lessons.forEach(l => l.active = false);
+            lesson.active = true;
+
+            // Update UI
+            lessonTitle.textContent = lesson.title;
+            document.getElementById('courseTitle').textContent = 'Web Development - ' + lesson.title;
+
+            // Reload video (in production, load actual video URL)
+            courseVideo.currentTime = 0;
+            courseVideo.play();
+
+            renderLessons();
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 992) {
+                courseSidebar.classList.remove('active');
+            }
+        }
+
+        // Mark lesson as complete
+        document.getElementById('markCompleteBtn').addEventListener('click', () => {
+            lessons[currentLesson - 1].completed = true;
+            renderLessons();
+            showToast('Lesson marked as complete! 🎉');
+            updateProgress();
+        });
+
+        // Next lesson
+        document.getElementById('nextLessonBtn').addEventListener('click', () => {
+            if (currentLesson < lessons.length) {
+                selectLesson(currentLesson + 1);
+            } else {
+                showToast('Congratulations! You have completed all lessons! 🎓');
+            }
+        });
+
+        // Update progress
+        function updateProgress() {
+            const completed = lessons.filter(l => l.completed).length;
+            const total = lessons.length;
+            const progress = Math.round((completed / total) * 100);
+            document.getElementById('progressText').textContent = `${progress}% Complete`;
+        }
+
+        // Save notes
+        function saveNotes() {
+            const notes = document.getElementById('lessonNotes').value;
+            localStorage.setItem(`notes_lesson_${currentLesson}`, notes);
+            showToast('Notes saved successfully!');
+        }
+
+        // Load notes
+        function loadNotes() {
+            const notes = localStorage.getItem(`notes_lesson_${currentLesson}`);
+            if (notes) {
+                document.getElementById('lessonNotes').value = notes;
+            }
+        }
+
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Toggle sidebar
+        toggleSidebar.addEventListener('click', () => {
+            courseSidebar.classList.toggle('active');
+        });
+
+        // Sidebar tabs
+        document.querySelectorAll('.sidebar-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // Video protection
+        courseVideo.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
+
+        // Prevent video download via drag
+        courseVideo.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+            return false;
+        });
+
+        // Initialize security
+        FirebaseAuth.initAuthObserver((user) => {
+            if (user) {
+                // Add watermark with user email
+                videoWatermark.textContent = user.email;
+
+                if (window.SecurityModule) {
+                    SecurityModule.addWatermark(user.email);
+                    SecurityModule.protectVideo(courseVideo);
+                    SecurityModule.initSessionTimeout(60); // 60 minute session
+                }
+            } else {
+                // Demo mode
+                videoWatermark.textContent = 'demo@skillorbit.com';
+            }
+        });
+
+        // Initialize
+        renderLessons();
+        loadNotes();
+        updateProgress();
+
+        // Track video progress
+        courseVideo.addEventListener('timeupdate', () => {
+            const progress = (courseVideo.currentTime / courseVideo.duration) * 100;
+            // In production, save progress to Firebase
+        });
+
+        // Auto-mark complete when video ends
+        courseVideo.addEventListener('ended', () => {
+            lessons[currentLesson - 1].completed = true;
+            renderLessons();
+            updateProgress();
+            showToast('Lesson completed! Moving to next lesson...');
+
+            setTimeout(() => {
+                if (currentLesson < lessons.length) {
+                    selectLesson(currentLesson + 1);
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>

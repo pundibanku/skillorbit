@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Course Details - SkillOrbit">
+    <title>Course Details - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <style>
+        .course-hero {
+            padding: 140px 0 60px;
+            background: var(--bg-secondary);
+        }
+
+        .course-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .course-info h1 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .course-meta-large {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .meta-item i {
+            color: var(--primary);
+        }
+
+        .course-purchase-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            position: sticky;
+            top: 100px;
+        }
+
+        .course-purchase-card img {
+            width: 100%;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+        }
+
+        .price-large {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .price-original {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background: var(--gradient-accent);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .curriculum-section {
+            padding: 60px 0;
+        }
+
+        .curriculum-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .curriculum-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .curriculum-content {
+            padding: 0 20px 20px;
+            display: none;
+        }
+
+        .curriculum-item.active .curriculum-content {
+            display: block;
+        }
+
+        .lesson-list {
+            list-style: none;
+        }
+
+        .lesson-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+        }
+
+        .lesson-list li:last-child {
+            border-bottom: none;
+        }
+
+        .instructor-card {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            padding: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+        }
+
+        .instructor-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        @media (max-width: 992px) {
+            .course-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .course-purchase-card {
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🚀</div>
+                <span>SkillOrbit</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="courses.html">Courses</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-secondary btn-sm">Login</a>
+                <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Course Hero -->
+    <section class="course-hero">
+        <div class="container">
+            <div class="course-detail-grid">
+                <div class="course-info">
+                    <span class="section-badge" id="courseCategory">Web Development</span>
+                    <h1 id="courseTitle">Complete Web Development Bootcamp</h1>
+                    <p style="font-size: 1.125rem; margin-bottom: 24px;" id="courseDescription">
+                        Learn web development from scratch. Master HTML, CSS, JavaScript, React, Node.js, and more.
+                        Build real-world projects and become a full-stack developer.
+                    </p>
+
+                    <div class="course-meta-large">
+                        <div class="meta-item">
+                            <i class="fas fa-star" style="color: var(--warning);"></i>
+                            <span id="courseRating">4.8 (2,340 reviews)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span id="courseStudents">5,420 students</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="courseDuration">45 hours</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-signal"></i>
+                            <span>All Levels</span>
+                        </div>
+                    </div>
+
+                    <div class="instructor-card">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Instructor"
+                            class="instructor-avatar">
+                        <div>
+                            <h4 style="margin-bottom: 4px;">Rajesh Kumar</h4>
+                            <p style="margin: 0; color: var(--text-muted);">Senior Developer | 10+ Years Experience</p>
+                            <p style="margin: 8px 0 0; font-size: 0.875rem;">Former Google Engineer with expertise in
+                                full-stack development.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-purchase-card">
+                    <img id="courseImage"
+                        src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=250&fit=crop"
+                        alt="Course">
+                    <div style="margin-bottom: 24px;">
+                        <span class="price-large" id="coursePrice">₹2,999</span>
+                        <span class="price-original" id="courseOriginalPrice">₹9,999</span>
+                        <span class="discount-badge">70% OFF</span>
+                    </div>
+                    <p style="color: var(--error); font-size: 0.875rem; margin-bottom: 16px;">
+                        <i class="fas fa-clock"></i> Sale ends in 2 days!
+                    </p>
+                    <button class="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 12px;" id="enrollBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        Enroll Now
+                    </button>
+                    <button class="btn btn-secondary" style="width: 100%;">
+                        <i class="fas fa-heart"></i>
+                        Add to Wishlist
+                    </button>
+
+                    <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                        <h4 style="margin-bottom: 16px;">This course includes:</h4>
+                        <ul style="list-style: none;">
+                            <li style="padding: 8px 0; color: var(--text-secondary);"><i class="fas fa-video"
+                                    style="width: 24px; color: var(--primary);"></i> 45 hours on-demand video</li>
+                            <li style="padding: 8px 0; color: var(--text-secondary);"><i class="fas fa-file-download"
+                                    style="width: 24px; color: var(--primary);"></i> 50+ downloadable resources</li>
+                            <li style="padding: 8px 0; color: var(--text-secondary);"><i class="fas fa-code"
+                                    style="width: 24px; color: var(--primary);"></i> 20+ coding projects</li>
+                            <li style="padding: 8px 0; color: var(--text-secondary);"><i class="fas fa-infinity"
+                                    style="width: 24px; color: var(--primary);"></i> Lifetime access</li>
+                            <li style="padding: 8px 0; color: var(--text-secondary);"><i class="fas fa-mobile-alt"
+                                    style="width: 24px; color: var(--primary);"></i> Access on mobile</li>
+                            <li style="padding: 8px 0; color: var(--text-secondary);"><i class="fas fa-certificate"
+                                    style="width: 24px; color: var(--primary);"></i> Certificate of completion</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Curriculum Section -->
+    <section class="curriculum-section">
+        <div class="container">
+            <h2 style="margin-bottom: 32px;">Course Curriculum</h2>
+
+            <div id="curriculumList">
+                <div class="curriculum-item active">
+                    <div class="curriculum-header" onclick="toggleSection(this)">
+                        <div>
+                            <h4 style="margin: 0;">Section 1: Getting Started</h4>
+                            <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 0.875rem;">5 lectures • 45
+                                mins</p>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="curriculum-content">
+                        <ul class="lesson-list">
+                            <li><i class="fas fa-play-circle"></i> Introduction to the Course <span
+                                    style="margin-left: auto;">5:30</span></li>
+                            <li><i class="fas fa-play-circle"></i> Setting Up Your Environment <span
+                                    style="margin-left: auto;">12:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> Understanding Web Development <span
+                                    style="margin-left: auto;">8:45</span></li>
+                            <li><i class="fas fa-play-circle"></i> Tools You'll Need <span
+                                    style="margin-left: auto;">10:20</span></li>
+                            <li><i class="fas fa-file-alt"></i> Course Resources <span
+                                    style="margin-left: auto;">PDF</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="curriculum-item">
+                    <div class="curriculum-header" onclick="toggleSection(this)">
+                        <div>
+                            <h4 style="margin: 0;">Section 2: HTML Fundamentals</h4>
+                            <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 0.875rem;">8 lectures • 1.5
+                                hrs</p>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="curriculum-content">
+                        <ul class="lesson-list">
+                            <li><i class="fas fa-play-circle"></i> HTML Basics <span
+                                    style="margin-left: auto;">15:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> HTML Elements & Tags <span
+                                    style="margin-left: auto;">18:30</span></li>
+                            <li><i class="fas fa-play-circle"></i> Forms & Input <span
+                                    style="margin-left: auto;">20:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> Semantic HTML <span
+                                    style="margin-left: auto;">12:00</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="curriculum-item">
+                    <div class="curriculum-header" onclick="toggleSection(this)">
+                        <div>
+                            <h4 style="margin: 0;">Section 3: CSS Styling</h4>
+                            <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 0.875rem;">12 lectures • 2.5
+                                hrs</p>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="curriculum-content">
+                        <ul class="lesson-list">
+                            <li><i class="fas fa-play-circle"></i> CSS Fundamentals <span
+                                    style="margin-left: auto;">20:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> Flexbox Layout <span
+                                    style="margin-left: auto;">25:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> CSS Grid <span
+                                    style="margin-left: auto;">22:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> Responsive Design <span
+                                    style="margin-left: auto;">30:00</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="curriculum-item">
+                    <div class="curriculum-header" onclick="toggleSection(this)">
+                        <div>
+                            <h4 style="margin: 0;">Section 4: JavaScript Mastery</h4>
+                            <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 0.875rem;">15 lectures • 4
+                                hrs</p>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="curriculum-content">
+                        <ul class="lesson-list">
+                            <li><i class="fas fa-play-circle"></i> JavaScript Basics <span
+                                    style="margin-left: auto;">25:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> DOM Manipulation <span
+                                    style="margin-left: auto;">30:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> Events & Listeners <span
+                                    style="margin-left: auto;">20:00</span></li>
+                            <li><i class="fas fa-play-circle"></i> Async JavaScript <span
+                                    style="margin-left: auto;">35:00</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+                <p>&copy; 2026 SkillOrbit. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Toggle curriculum sections
+        function toggleSection(header) {
+            const item = header.parentElement;
+            item.classList.toggle('active');
+        }
+
+        // Enroll button
+        document.getElementById('enrollBtn').addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+
+        // Load course data from URL param
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('id');
+
+        // Course data would be loaded from Firebase in production
+    </script>
+</body>
+
+</html>

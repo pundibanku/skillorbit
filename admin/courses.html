@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Courses - Admin - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <span>SkillOrbit</span>
+                </a>
+            </div>
+            <ul class="admin-sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="courses.html" class="active"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <a href="#" id="logoutBtn" style="color: var(--error);"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button class="mobile-menu-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h1>Manage Courses</h1>
+                </div>
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fas fa-plus"></i> Add New Course
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="admin-filters">
+                <div class="admin-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-input" placeholder="Search courses..." id="searchInput">
+                </div>
+                <select class="form-input" style="width: auto;" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Programming">Programming</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Design">Design</option>
+                    <option value="Data Science">Data Science</option>
+                </select>
+            </div>
+
+            <!-- Courses Table -->
+            <div class="admin-card">
+                <div class="admin-card-body" style="padding: 0;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Students</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coursesTable">
+                            <!-- Courses will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Course Modal -->
+    <div class="modal-overlay" id="courseModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Course</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="courseForm">
+                    <input type="hidden" id="courseId">
+                    <div class="form-group">
+                        <label class="form-label">Course Title</label>
+                        <input type="text" class="form-input" id="courseTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-input" id="courseCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Programming">Programming</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Design">Design</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Mobile Development">Mobile Development</option>
+                        </select>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label class="form-label">Price (₹)</label>
+                            <input type="number" class="form-input" id="coursePrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Original Price (₹)</label>
+                            <input type="number" class="form-input" id="courseOriginalPrice">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Duration (e.g., "45 hours")</label>
+                        <input type="text" class="form-input" id="courseDuration" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Image URL</label>
+                        <input type="url" class="form-input" id="courseImage" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input" id="courseDescription" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="courseActive" checked style="width: 18px; height: 18px;">
+                            <span>Course is Active</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveCourse()">Save Course</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>Delete Course</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this course? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-accent" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Check admin login
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        // Sample courses data
+        let courses = [
+            { id: 1, title: "Complete Web Development Bootcamp", category: "Web Development", price: 2999, originalPrice: 9999, duration: "45 hours", students: 5420, active: true, image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=60&h=40&fit=crop" },
+            { id: 2, title: "Digital Marketing Masterclass", category: "Marketing", price: 1999, originalPrice: 6999, duration: "32 hours", students: 3210, active: true, image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=60&h=40&fit=crop" },
+            { id: 3, title: "Python Programming for Beginners", category: "Programming", price: 1499, originalPrice: 4999, duration: "28 hours", students: 8750, active: true, image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=60&h=40&fit=crop" },
+            { id: 4, title: "UI/UX Design Fundamentals", category: "Design", price: 2499, originalPrice: 7999, duration: "38 hours", students: 2890, active: true, image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=60&h=40&fit=crop" },
+            { id: 5, title: "Data Science with Python", category: "Data Science", price: 3499, originalPrice: 11999, duration: "52 hours", students: 4120, active: true, image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=60&h=40&fit=crop" }
+        ];
+
+        let deleteId = null;
+
+        // DOM Elements
+        const coursesTable = document.getElementById('coursesTable');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const courseModal = document.getElementById('courseModal');
+        const deleteModal = document.getElementById('deleteModal');
+
+        // Render courses table
+        function renderCourses() {
+            const search = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+
+            let filtered = courses.filter(c => {
+                const matchSearch = c.title.toLowerCase().includes(search);
+                const matchCategory = !category || c.category === category;
+                return matchSearch && matchCategory;
+            });
+
+            coursesTable.innerHTML = filtered.map(course => `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="${course.image}" class="image-preview">
+                            <span>${course.title}</span>
+                        </div>
+                    </td>
+                    <td>${course.category}</td>
+                    <td>₹${course.price.toLocaleString()}</td>
+                    <td>${course.students.toLocaleString()}</td>
+                    <td><span class="status-badge ${course.active ? 'active' : 'inactive'}">${course.active ? 'Active' : 'Inactive'}</span></td>
+                    <td>
+                        <button class="action-btn view" onclick="viewCourse(${course.id})" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit" onclick="editCourse(${course.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete" onclick="deleteCourse(${course.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Course';
+            document.getElementById('courseForm').reset();
+            document.getElementById('courseId').value = '';
+            courseModal.classList.add('active');
+        }
+
+        // Edit course
+        function editCourse(id) {
+            const course = courses.find(c => c.id === id);
+            if (!course) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit Course';
+            document.getElementById('courseId').value = course.id;
+            document.getElementById('courseTitle').value = course.title;
+            document.getElementById('courseCategory').value = course.category;
+            document.getElementById('coursePrice').value = course.price;
+            document.getElementById('courseOriginalPrice').value = course.originalPrice;
+            document.getElementById('courseDuration').value = course.duration;
+            document.getElementById('courseImage').value = course.image;
+            document.getElementById('courseActive').checked = course.active;
+
+            courseModal.classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            courseModal.classList.remove('active');
+        }
+
+        // Save course
+        function saveCourse() {
+            const id = document.getElementById('courseId').value;
+            const courseData = {
+                title: document.getElementById('courseTitle').value,
+                category: document.getElementById('courseCategory').value,
+                price: parseInt(document.getElementById('coursePrice').value),
+                originalPrice: parseInt(document.getElementById('courseOriginalPrice').value) || 0,
+                duration: document.getElementById('courseDuration').value,
+                image: document.getElementById('courseImage').value || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=60&h=40&fit=crop',
+                active: document.getElementById('courseActive').checked,
+                students: 0
+            };
+
+            if (id) {
+                // Update existing
+                const index = courses.findIndex(c => c.id === parseInt(id));
+                courses[index] = { ...courses[index], ...courseData };
+                showToast('Course updated successfully!');
+            } else {
+                // Add new
+                courseData.id = Math.max(...courses.map(c => c.id)) + 1;
+                courses.push(courseData);
+                showToast('Course added successfully!');
+            }
+
+            closeModal();
+            renderCourses();
+        }
+
+        // Delete course
+        function deleteCourse(id) {
+            deleteId = id;
+            deleteModal.classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            deleteModal.classList.remove('active');
+            deleteId = null;
+        }
+
+        function confirmDelete() {
+            courses = courses.filter(c => c.id !== deleteId);
+            closeDeleteModal();
+            renderCourses();
+            showToast('Course deleted successfully!');
+        }
+
+        // View course
+        function viewCourse(id) {
+            window.open(`../course-detail.html?id=${id}`, '_blank');
+        }
+
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas fa-check-circle"></i><span>${message}</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', renderCourses);
+        categoryFilter.addEventListener('change', renderCourses);
+
+        // Sidebar toggle
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('adminSidebar').classList.toggle('active');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'index.html';
+        });
+
+        // Initialize
+        renderCourses();
+    </script>
+</body>
+
+</html>

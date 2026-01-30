@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <a href="../index.html" class="logo">
+                        <div class="logo-icon">🚀</div>
+                        <span>SkillOrbit</span>
+                    </a>
+                    <h1>Admin Login</h1>
+                    <p>Access your admin dashboard</p>
+                </div>
+
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Admin Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="admin@skillorbit.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <div class="password-toggle">
+                            <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-lock"></i>
+                        Login to Dashboard
+                    </button>
+                </form>
+
+                <p class="auth-footer" style="margin-top: 32px;">
+                    <a href="../index.html">← Back to Website</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- INLINE FIREBASE CONFIG TO FIX LOADING ISSUES -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFAuo5deSArYV6I8GqUmHGlVjDx27x0QM",
+            authDomain: "test-projects-34f9b.firebaseapp.com",
+            projectId: "test-projects-34f9b",
+            storageBucket: "test-projects-34f9b.firebasestorage.app",
+            messagingSenderId: "707160789934",
+            appId: "1:707160789934:web:429b47ab1088dc0f95ae3f"
+        };
+
+        // Initialize Firebase
+        let app, auth, db, storage;
+        if (typeof firebase !== 'undefined') {
+            if (!firebase.apps.length) app = firebase.initializeApp(firebaseConfig);
+            else app = firebase.app();
+            auth = firebase.auth();
+            db = firebase.firestore();
+        }
+
+        // Auth Helpers
+        window.FirebaseAuth = {
+            initAuthObserver: (cb) => auth && auth.onAuthStateChanged(cb),
+            signInWithEmail: async (email, password) => {
+                try {
+                    const cred = await auth.signInWithEmailAndPassword(email, password);
+                    return { success: true, user: cred.user };
+                } catch (e) { return { success: false, error: e.message }; }
+            },
+            isUserAdmin: async (uid) => {
+                try {
+                    const doc = await db.collection('users').doc(uid).get();
+                    return doc.exists && doc.data().role === 'admin';
+                } catch (e) { return false; }
+            },
+            signOut: async () => auth.signOut()
+        };
+    </script>
+    <script>
+        const adminLoginForm = document.getElementById('adminLoginForm');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // Demo admin credentials
+        const DEMO_ADMIN = {
+            email: 'admin@skillorbit.com',
+            password: 'admin123'
+        };
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.querySelector('i').classList.toggle('fa-eye');
+            togglePassword.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function setLoading(show) {
+            loadingOverlay.classList.toggle('hidden', !show);
+        }
+
+        adminLoginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            setLoading(true);
+
+            // Demo mode - check demo credentials
+
+
+            // Firebase login
+            try {
+                const result = await FirebaseAuth.signInWithEmail(email, password);
+
+                if (result.success) {
+                    const isAdmin = await FirebaseAuth.isUserAdmin(result.user.uid);
+
+                    if (isAdmin) {
+                        showToast('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1500);
+                    } else {
+                        showToast('Access denied. Admin privileges required.', 'error');
+                        await FirebaseAuth.signOut();
+                    }
+                } else {
+                    showToast(result.error || 'Login failed.', 'error');
+                }
+            } catch (error) {
+                showToast('Login failed. Please try again.', 'error');
+            }
+
+            setLoading(false);
+        });
+
+        // Check if already logged in as admin
+        const isAdminLogged = localStorage.getItem('adminLoggedIn');
+        if (isAdminLogged === 'true') {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+
+</html>

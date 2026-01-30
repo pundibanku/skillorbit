@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse all courses on SkillOrbit">
+    <title>All Courses - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🚀</div>
+                <span>SkillOrbit</span>
+            </a>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="courses.html" style="color: var(--primary);">Courses</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+                <li><a href="index.html#pricing">Pricing</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-secondary btn-sm">Login</a>
+                <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section style="padding: 140px 0 60px; background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header" style="margin-bottom: 40px;">
+                <span class="section-badge">📚 All Courses</span>
+                <h1>Explore Our Courses</h1>
+                <p>Find the perfect course to boost your skills and career</p>
+            </div>
+
+            <!-- Search & Filters -->
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                <div style="flex: 1; max-width: 400px;">
+                    <div style="position: relative;">
+                        <input type="text" id="searchInput" class="form-input" placeholder="Search courses..."
+                            style="padding-left: 45px;">
+                        <i class="fas fa-search"
+                            style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    </div>
+                </div>
+                <select id="categoryFilter" class="form-input" style="width: auto; min-width: 180px;">
+                    <option value="">All Categories</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Programming">Programming</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Design">Design</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Mobile Development">Mobile Development</option>
+                </select>
+                <select id="sortFilter" class="form-input" style="width: auto; min-width: 150px;">
+                    <option value="popular">Most Popular</option>
+                    <option value="newest">Newest</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Highest Rated</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Grid -->
+    <section style="padding: 60px 0 100px;">
+        <div class="container">
+            <div class="courses-grid" id="coursesGrid">
+                <!-- Courses will be loaded here -->
+            </div>
+
+            <div class="text-center mt-4" id="noResults" style="display: none;">
+                <p style="font-size: 1.25rem; color: var(--text-muted);">
+                    <i class="fas fa-search" style="font-size: 3rem; display: block; margin-bottom: 20px;"></i>
+                    No courses found matching your criteria
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+                <p>&copy; 2026 SkillOrbit. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // All courses data (expanded)
+        const allCourses = [
+            { id: 1, title: "Complete Web Development Bootcamp", category: "Web Development", image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=250&fit=crop", price: 2999, originalPrice: 9999, rating: 4.8, students: 5420, duration: "45 hours", badge: "Bestseller" },
+            { id: 2, title: "Digital Marketing Masterclass", category: "Marketing", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop", price: 1999, originalPrice: 6999, rating: 4.7, students: 3210, duration: "32 hours", badge: "Popular" },
+            { id: 3, title: "Python Programming for Beginners", category: "Programming", image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=250&fit=crop", price: 1499, originalPrice: 4999, rating: 4.9, students: 8750, duration: "28 hours", badge: "Hot" },
+            { id: 4, title: "UI/UX Design Fundamentals", category: "Design", image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=250&fit=crop", price: 2499, originalPrice: 7999, rating: 4.6, students: 2890, duration: "38 hours", badge: "" },
+            { id: 5, title: "Data Science with Python", category: "Data Science", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop", price: 3499, originalPrice: 11999, rating: 4.8, students: 4120, duration: "52 hours", badge: "New" },
+            { id: 6, title: "React Native App Development", category: "Mobile Development", image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=250&fit=crop", price: 2799, originalPrice: 8999, rating: 4.7, students: 3450, duration: "42 hours", badge: "" },
+            { id: 7, title: "Advanced JavaScript Mastery", category: "Programming", image: "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=400&h=250&fit=crop", price: 1999, originalPrice: 5999, rating: 4.8, students: 6320, duration: "35 hours", badge: "Bestseller" },
+            { id: 8, title: "Social Media Marketing", category: "Marketing", image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&h=250&fit=crop", price: 1299, originalPrice: 3999, rating: 4.5, students: 4560, duration: "20 hours", badge: "" },
+            { id: 9, title: "Machine Learning A-Z", category: "Data Science", image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=250&fit=crop", price: 3999, originalPrice: 12999, rating: 4.9, students: 5890, duration: "60 hours", badge: "Hot" },
+            { id: 10, title: "Flutter Mobile Development", category: "Mobile Development", image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=250&fit=crop", price: 2499, originalPrice: 7999, rating: 4.7, students: 2340, duration: "40 hours", badge: "New" },
+            { id: 11, title: "Node.js Backend Development", category: "Web Development", image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=250&fit=crop", price: 2299, originalPrice: 6999, rating: 4.6, students: 3780, duration: "38 hours", badge: "" },
+            { id: 12, title: "Graphic Design Essentials", category: "Design", image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&h=250&fit=crop", price: 1799, originalPrice: 5499, rating: 4.5, students: 2120, duration: "25 hours", badge: "" }
+        ];
+
+        const coursesGrid = document.getElementById('coursesGrid');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const sortFilter = document.getElementById('sortFilter');
+        const noResults = document.getElementById('noResults');
+
+        // Render courses
+        function renderCourses(courses) {
+            if (courses.length === 0) {
+                coursesGrid.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            coursesGrid.innerHTML = courses.map(course => `
+                <div class="course-card" onclick="viewCourse(${course.id})">
+                    <div class="course-image">
+                        <img src="${course.image}" alt="${course.title}">
+                        ${course.badge ? `<span class="course-badge">${course.badge}</span>` : ''}
+                    </div>
+                    <div class="course-content">
+                        <span class="course-category">${course.category}</span>
+                        <h3>${course.title}</h3>
+                        <div class="course-meta">
+                            <span><i class="fas fa-clock"></i> ${course.duration}</span>
+                            <span><i class="fas fa-users"></i> ${course.students.toLocaleString()}</span>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-price">
+                                ₹${course.price.toLocaleString()}
+                                <span class="original">₹${course.originalPrice.toLocaleString()}</span>
+                            </div>
+                            <div class="course-rating">
+                                <i class="fas fa-star"></i>
+                                ${course.rating}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter and sort courses
+        function filterCourses() {
+            const search = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+            const sort = sortFilter.value;
+
+            let filtered = allCourses.filter(course => {
+                const matchesSearch = course.title.toLowerCase().includes(search) ||
+                    course.category.toLowerCase().includes(search);
+                const matchesCategory = !category || course.category === category;
+                return matchesSearch && matchesCategory;
+            });
+
+            // Sort
+            switch (sort) {
+                case 'newest':
+                    filtered.reverse();
+                    break;
+                case 'price-low':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    filtered.sort((a, b) => b.rating - a.rating);
+                    break;
+                default: // popular
+                    filtered.sort((a, b) => b.students - a.students);
+            }
+
+            renderCourses(filtered);
+        }
+
+        // View course details
+        function viewCourse(courseId) {
+            window.location.href = `course-detail.html?id=${courseId}`;
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterCourses);
+        categoryFilter.addEventListener('change', filterCourses);
+        sortFilter.addEventListener('change', filterCourses);
+
+        // Initial render
+        renderCourses(allCourses);
+
+        // Mobile menu
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

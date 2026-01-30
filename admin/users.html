@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Admin - SkillOrbit</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <span>SkillOrbit</span>
+                </a>
+            </div>
+            <ul class="admin-sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="users.html" class="active"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <a href="#" id="logoutBtn" style="color: var(--error);"><i class="fas fa-sign-out-alt"></i>
+                        Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button class="mobile-menu-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h1>Manage Users</h1>
+                </div>
+                <div style="color: var(--text-muted);">
+                    Total: <strong id="totalUsers">1,250</strong> users
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="admin-filters">
+                <div class="admin-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-input" placeholder="Search users..." id="searchInput">
+                </div>
+                <select class="form-input" style="width: auto;" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+                <select class="form-input" style="width: auto;" id="roleFilter">
+                    <option value="">All Roles</option>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+
+            <!-- Users Table -->
+            <div class="admin-card">
+                <div class="admin-card-body" style="padding: 0;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Enrolled Courses</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button><i class="fas fa-chevron-left"></i></button>
+                <button class="active">1</button>
+                <button>2</button>
+                <button>3</button>
+                <button>4</button>
+                <button>5</button>
+                <button><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>User Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="userDetails">
+                <!-- User details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn btn-accent" id="toggleStatusBtn">Toggle Status</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Check admin login
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        // Sample users data
+        const users = [
+            { id: 1, name: "Rahul Sharma", email: "rahul@gmail.com", avatar: "https://randomuser.me/api/portraits/men/32.jpg", courses: 3, joined: "15 Jan 2026", status: "active", role: "user" },
+            { id: 2, name: "Priya Patel", email: "priya@gmail.com", avatar: "https://randomuser.me/api/portraits/women/44.jpg", courses: 2, joined: "20 Jan 2026", status: "active", role: "user" },
+            { id: 3, name: "Amit Kumar", email: "amit@gmail.com", avatar: "https://randomuser.me/api/portraits/men/67.jpg", courses: 5, joined: "10 Jan 2026", status: "active", role: "user" },
+            { id: 4, name: "Sneha Gupta", email: "sneha@gmail.com", avatar: "https://randomuser.me/api/portraits/women/68.jpg", courses: 1, joined: "25 Jan 2026", status: "active", role: "user" },
+            { id: 5, name: "Vikram Singh", email: "vikram@gmail.com", avatar: "https://randomuser.me/api/portraits/men/22.jpg", courses: 4, joined: "05 Jan 2026", status: "inactive", role: "user" },
+            { id: 6, name: "Anita Desai", email: "anita@gmail.com", avatar: "https://randomuser.me/api/portraits/women/33.jpg", courses: 2, joined: "12 Jan 2026", status: "active", role: "user" },
+            { id: 7, name: "Rajesh Kumar", email: "rajesh@gmail.com", avatar: "https://randomuser.me/api/portraits/men/45.jpg", courses: 6, joined: "01 Jan 2026", status: "active", role: "admin" },
+            { id: 8, name: "Meera Nair", email: "meera@gmail.com", avatar: "https://randomuser.me/api/portraits/women/55.jpg", courses: 3, joined: "18 Jan 2026", status: "active", role: "user" }
+        ];
+
+        let currentUserId = null;
+
+        // DOM Elements
+        const usersTable = document.getElementById('usersTable');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const roleFilter = document.getElementById('roleFilter');
+        const userModal = document.getElementById('userModal');
+
+        // Render users table
+        function renderUsers() {
+            const search = searchInput.value.toLowerCase();
+            const status = statusFilter.value;
+            const role = roleFilter.value;
+
+            let filtered = users.filter(u => {
+                const matchSearch = u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search);
+                const matchStatus = !status || u.status === status;
+                const matchRole = !role || u.role === role;
+                return matchSearch && matchStatus && matchRole;
+            });
+
+            usersTable.innerHTML = filtered.map(user => `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="${user.avatar}" style="width: 40px; height: 40px; border-radius: 50%;">
+                            <div>
+                                <p style="margin: 0; font-weight: 500;">${user.name}</p>
+                                ${user.role === 'admin' ? '<span style="font-size: 0.75rem; color: var(--primary);">Admin</span>' : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td>${user.email}</td>
+                    <td>${user.courses} courses</td>
+                    <td>${user.joined}</td>
+                    <td><span class="status-badge ${user.status}">${user.status === 'active' ? 'Active' : 'Inactive'}</span></td>
+                    <td>
+                        <button class="action-btn view" onclick="viewUser(${user.id})" title="View"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit" onclick="editUser(${user.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('totalUsers').textContent = filtered.length.toLocaleString();
+        }
+
+        // View user details
+        function viewUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+
+            currentUserId = id;
+
+            document.getElementById('userDetails').innerHTML = `
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <img src="${user.avatar}" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 12px;">
+                    <h3 style="margin: 0;">${user.name}</h3>
+                    <p style="color: var(--text-muted); margin: 4px 0;">${user.email}</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div style="padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md); text-align: center;">
+                        <h4 style="margin: 0; font-size: 1.5rem;">${user.courses}</h4>
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Enrolled Courses</p>
+                    </div>
+                    <div style="padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md); text-align: center;">
+                        <h4 style="margin: 0; font-size: 1.5rem;">${user.joined}</h4>
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Joined</p>
+                    </div>
+                </div>
+                <div style="padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md);">
+                    <p style="margin: 0;"><strong>Status:</strong> <span class="status-badge ${user.status}">${user.status}</span></p>
+                    <p style="margin: 8px 0 0;"><strong>Role:</strong> ${user.role}</p>
+                </div>
+            `;
+
+            document.getElementById('toggleStatusBtn').textContent = user.status === 'active' ? 'Deactivate User' : 'Activate User';
+            userModal.classList.add('active');
+        }
+
+        // Edit user (placeholder)
+        function editUser(id) {
+            viewUser(id);
+        }
+
+        // Close modal
+        function closeModal() {
+            userModal.classList.remove('active');
+            currentUserId = null;
+        }
+
+        // Toggle user status
+        document.getElementById('toggleStatusBtn').addEventListener('click', () => {
+            if (!currentUserId) return;
+
+            const user = users.find(u => u.id === currentUserId);
+            user.status = user.status === 'active' ? 'inactive' : 'active';
+
+            closeModal();
+            renderUsers();
+            showToast(`User ${user.status === 'active' ? 'activated' : 'deactivated'} successfully!`);
+        });
+
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas fa-check-circle"></i><span>${message}</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', renderUsers);
+        statusFilter.addEventListener('change', renderUsers);
+        roleFilter.addEventListener('change', renderUsers);
+
+        // Sidebar toggle
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('adminSidebar').classList.toggle('active');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'index.html';
+        });
+
+        // Initialize
+        renderUsers();
+    </script>
+</body>
+
+</html>

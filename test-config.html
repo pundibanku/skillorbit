@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Config & Auth Test</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <h1>Firebase Config & Auth Test</h1>
+    <div id="status">Testing...</div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+
+        // 1. Define Config Directly
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFAuo5deSArYV6I8GqUmHGlVjDx27x0QM",
+            authDomain: "test-projects-34f9b.firebaseapp.com",
+            projectId: "test-projects-34f9b",
+            storageBucket: "test-projects-34f9b.firebasestorage.app",
+            messagingSenderId: "707160789934",
+            appId: "1:707160789934:web:429b47ab1088dc0f95ae3f"
+        };
+
+        try {
+            // 2. Initialize App
+            const app = firebase.initializeApp(firebaseConfig);
+            statusDiv.innerHTML += "<br>✅ Firebase App Initialized";
+
+            // 3. Initialize Auth
+            const auth = firebase.auth();
+            statusDiv.innerHTML += "<br>✅ Firebase Auth Initialized";
+
+            // 4. Test Auth Provider Fetch
+            auth.fetchSignInMethodsForEmail("test@example.com")
+                .then(() => {
+                    statusDiv.innerHTML += "<br>✅ Auth Network Connection Successful";
+                })
+                .catch(err => {
+                    statusDiv.innerHTML += "<br>❌ Auth Network Error: " + err.message;
+                });
+
+        } catch (error) {
+            statusDiv.innerHTML += "<br>❌ CRITICAL ERROR: " + error.message;
+        }
+    </script>
+</body>
+
+</html>
