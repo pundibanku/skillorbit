@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/pages.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="admin-body">
@@ -124,12 +125,7 @@
                     </div>
                     <div class="admin-card-body">
                         <div class="chart-container">
-                            <div style="text-align: center;">
-                                <i class="fas fa-chart-line"
-                                    style="font-size: 3rem; margin-bottom: 16px; color: var(--primary);"></i>
-                                <p>Revenue Chart</p>
-                                <p style="font-size: 0.875rem;">Integrate Chart.js for visual representation</p>
-                            </div>
+                            <canvas id="revenueChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -269,6 +265,45 @@
             localStorage.removeItem('adminEmail');
             window.location.href = 'index.html';
         });
+
+        // Initialize Revenue Chart
+        function initChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000],
+                        borderColor: '#6200ea',
+                        backgroundColor: 'rgba(98, 0, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load data and init
+        document.addEventListener('DOMContentLoaded', initChart);
 
         // Show toast
         function showToast(message, type = 'success') {
