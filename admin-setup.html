@@ -7,32 +7,45 @@
     <title>Fix Admin Access</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background: #f0f2f5;
+            margin: 0;
         }
 
         .card {
             background: white;
             padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
             max-width: 400px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
         }
 
         button {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 20px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            width: 100%;
             margin-top: 10px;
+            font-weight: 600;
         }
 
         button:hover {
@@ -41,23 +54,42 @@
 
         .status {
             margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 12px;
+            border-radius: 6px;
             display: none;
+            font-size: 14px;
+            text-align: left;
         }
 
         .success {
             background: #dcfce7;
             color: #166534;
+            border: 1px solid #bbf7d0;
         }
 
         .error {
             background: #fee2e2;
             color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        h2 {
+            color: #1e293b;
+            margin-top: 0;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #475569;
         }
     </style>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -65,14 +97,21 @@
 
 <body>
     <div class="card">
-        <h2>🛠️ Admin Fix Tool</h2>
-        <p>Click the button below to force-enable Admin access for your account.</p>
-        <button id="fixBtn" onclick="makeMeAdmin()">Make Me Admin</button>
+        <h2>🛠️ Auto-Fix Admin</h2>
+
+        <div id="loginStep">
+            <p style="color: #64748b; margin-bottom: 20px;">Enter your email & password to grant yourself Admin access
+                safely.</p>
+            <input type="email" id="email" placeholder="Your Email (e.g., vaidmize@gmail.com)"
+                value="vaidmize@gmail.com">
+            <input type="password" id="password" placeholder="Your Password">
+            <button onclick="fixAdmin()">Login & Make Admin</button>
+        </div>
+
         <div id="status" class="status"></div>
     </div>
 
     <script>
-        // CONFIG IS CORRECT (Matched with User Provided)
         const firebaseConfig = {
             apiKey: "AIzaSyDFAuo5deSArYV6I8GqUmHGlVjDx27x0QM",
             authDomain: "test-projects-34f9b.firebaseapp.com",
@@ -82,42 +121,40 @@
             appId: "1:707160789934:web:429b47ab1088dc0f95ae3f"
         };
 
-        // Initialize
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        async function makeMeAdmin() {
-            const btn = document.getElementById('fixBtn');
+        async function fixAdmin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             const status = document.getElementById('status');
+            const btn = document.querySelector('button');
+
+            if (!email || !password) {
+                showStatus("Please enter both email and password.", "error");
+                return;
+            }
 
             btn.disabled = true;
             btn.innerText = "Processing...";
             status.style.display = 'none';
 
-            // 1. Check Login
-            const user = auth.currentUser;
-            if (!user) {
-                status.innerText = "❌ You are not logged in! Go to Login page first.";
-                status.className = "status error";
-                status.style.display = 'block';
-                btn.disabled = false;
-                btn.innerText = "Make Me Admin";
-                return;
-            }
-
             try {
-                // 2. FORCE WRITE to Database
-                await db.collection('users').doc(user.uid).set({
-                    email: user.email,
-                    role: 'admin', // The Magic Key
+                // 1. Sign In
+                const cred = await auth.signInWithEmailAndPassword(email, password);
+                const uid = cred.user.uid;
+
+                // 2. Force Write Admin Role
+                await db.collection('users').doc(uid).set({
+                    email: email,
+                    role: 'admin',
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
 
                 // 3. Success
-                status.innerText = "✅ SUCCESS! You are now an Admin.\nRedirecting to dashboard...";
-                status.className = "status success";
-                status.style.display = 'block';
+                showStatus(`✅ SUCCESS!\nUser: ${email}\nRole: Adjusted to 'admin'`, "success");
+                btn.innerText = "Redirecting to Dashboard...";
 
                 setTimeout(() => {
                     window.location.href = 'admin/index.html';
@@ -125,20 +162,21 @@
 
             } catch (error) {
                 console.error(error);
-                status.innerText = "❌ Database Error: " + error.message + "\n(Check Firestore Rules in Console)";
-                status.className = "status error";
-                status.style.display = 'block';
+                let msg = error.message;
+                if (error.code === 'auth/wrong-password') msg = "Incorrect Password!";
+                if (error.code === 'auth/user-not-found') msg = "User not found! Register first.";
+                showStatus("❌ Error: " + msg, "error");
                 btn.disabled = false;
-                btn.innerText = "Try Again";
+                btn.innerText = "Login & Make Admin";
             }
         }
 
-        // Wait for Auth to load
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                console.log("Logged in as:", user.email);
-            }
-        });
+        function showStatus(msg, type) {
+            const el = document.getElementById('status');
+            el.innerText = msg;
+            el.className = `status ${type}`;
+            el.style.display = 'block';
+        }
     </script>
 </body>
 
